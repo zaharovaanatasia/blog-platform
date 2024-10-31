@@ -1,0 +1,15 @@
+@use './styles/vars.scss' as vars;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&family=Roboto:ital,wght@0,500;1,400&display=swap');
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+body {
+  background: vars.$bg-color;
+  font-family: Inter, sans-serif;
+}

@@ -1,0 +1,60 @@
+@use '../../styles/vars.scss' as vars;
+
+.postdetail {
+  max-width: vars.$content-size;
+  margin: 20px auto;
+  padding-bottom: 20px;
+
+  &__title-text {
+    cursor: default;
+    &:hover {
+      text-decoration: none;
+    }
+  }
+  &__desc {
+    color: vars.$text-color-secondary;
+    margin: 19px 0 25px;
+  }
+
+  &__body {
+    font-size: 18px;
+    margin-left: 20px;
+  }
+}
+
+.btns {
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+  .btn {
+    display: block;
+    background: transparent;
+    outline: none;
+    padding: 6px 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    &__delete {
+      position: relative;
+      border: 1px solid vars.$error-color;
+      color: vars.$error-color;
+    }
+    &__edit {
+      margin-left: 12px;
+      border: 1px solid vars.$success-color;
+      color: vars.$success-color;
+    }
+  }
+}
+
+.modal {
+  position: relative;
+  top: 0;
+  right: 0;
+}
+
+.triangle {
+  display: inline-block;
+  border: 12px solid transparent;
+  border-right: 6px solid blue;
+  position: absolute;
+}
