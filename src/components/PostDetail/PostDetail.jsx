@@ -1,56 +1,29 @@
 import { format } from 'date-fns';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-
+import { useGetArticleBySlugQuery } from '../../redux/apiSlice.js';
 import ErrorSnackbar from '../ErrorSnackbar/ErrorSnackbar';
-import { fetchPostSlug } from '../../api/fetchPostSlug';
 import { cleanText } from '../../utils/cleanText';
 import Loading from '../Loading/Loading';
 import './PostDetail.scss';
 
 const PostDetail = () => {
   const { slug } = useParams();
-  const [article, setArticle] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
-  useEffect(() => {
-    const getArticle = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await fetchPostSlug(slug);
-        setArticle(data.article);
-      } catch (err) {
-        setError(err);
-        setSnackbarOpen(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getArticle();
-  }, [slug]);
+  const { data, error, isLoading } = useGetArticleBySlugQuery(slug);
 
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'MMMM d, yyyy');
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
+  if (isLoading) return <Loading />;
 
-  if (loading) return <Loading />;
-  if (error)
+  if (error) {
     return (
-      <ErrorSnackbar
-        open={snackbarOpen}
-        message={error ? error.message : ''}
-        onClose={handleSnackbarClose}
-      />
+      <div className="postdetail">
+        <ErrorSnackbar open={true} message={error.error || 'Неизвестная ошибка'} />
+      </div>
     );
+  }
 
   const {
     title,
@@ -61,7 +34,7 @@ const PostDetail = () => {
     description,
     createdAt,
     body,
-  } = article;
+  } = data.article;
 
   return (
     <div className="postdetail">

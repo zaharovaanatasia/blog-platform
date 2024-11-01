@@ -1,66 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Pagination from '@mui/material/Pagination';
 
 import ErrorSnackbar from '../ErrorSnackbar/ErrorSnackbar.jsx';
-import { fetchArticles } from '../../api/fetchPost.js';
 import Post from './Post/Post';
 import Loading from '../Loading/Loading.jsx';
 
+import { useGetArticlesQuery } from '../../redux/apiSlice.js';
+
 const PostList = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  useEffect(() => {
-    const getArticles = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchArticles(page, 5);
-        setArticles(data.articles);
-        setTotalPages(Math.ceil(data.articlesCount / 10));
-      } catch (err) {
-        setError(err);
-        setSnackbarOpen(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getArticles();
-  }, [page]);
+  const { data, error, isLoading } = useGetArticlesQuery({ page, limit: 5 });
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
-  };
-
-  if (loading) {
-    return <Loading></Loading>;
+  if (isLoading) {
+    return <Loading />;
   }
 
-  if (error)
-    return (
-      <ErrorSnackbar
-        open={snackbarOpen}
-        message={error ? error.message : ''}
-        onClose={handleSnackbarClose}
-      />
-    );
+  if (error) {
+    return <ErrorSnackbar open={true} message={error.error || 'Неизвестная ошибка'} />;
+  }
 
   return (
     <div className="postlist">
-      {articles.map((article) => (
+      {data.articles.map((article) => (
         <Post key={article.slug} article={article} />
       ))}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination
-          count={totalPages}
+          count={Math.ceil(data.articlesCount / 5)}
           page={page}
           onChange={handlePageChange}
           variant="outlined"
