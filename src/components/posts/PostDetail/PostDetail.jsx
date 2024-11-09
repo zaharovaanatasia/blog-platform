@@ -1,10 +1,11 @@
 import { format } from 'date-fns';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { useGetArticleBySlugQuery } from '../../redux/apiSlice.js';
-import ErrorSnackbar from '../ErrorSnackbar/ErrorSnackbar';
-import { cleanText } from '../../utils/cleanText';
-import Loading from '../Loading/Loading';
+
+import { useGetArticleBySlugQuery } from '../../../redux/articlesApiSlice.js';
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar.jsx';
+import { cleanText } from '../../../shared/utils/cleanText.js';
+import Loading from '../../../shared/ui/Loading/Loading.jsx';
 import './PostDetail.scss';
 
 const PostDetail = () => {
@@ -72,7 +73,7 @@ const PostDetail = () => {
           </div>
         </div>
         <div className="postdetail__body">
-          <ReactMarkdown>{cleanText(body)}</ReactMarkdown>
+          <ReactMarkdown>{body}</ReactMarkdown>
         </div>
       </div>
     </div>

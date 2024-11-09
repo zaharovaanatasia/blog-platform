@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
-import { truncateText } from '../../../utils/truncateText.js';
-import { cleanText } from '../../../utils/cleanText.js';
+import { truncateText } from '../../../shared/utils/truncateText.js';
+import { cleanText } from '../../../shared/utils/cleanText.js';
 
 import './Post.scss';
 

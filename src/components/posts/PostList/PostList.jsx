@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 
-import ErrorSnackbar from '../ErrorSnackbar/ErrorSnackbar.jsx';
-import Post from './Post/Post';
-import Loading from '../Loading/Loading.jsx';
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar.jsx';
+import Post from '../Post/Post.jsx';
+import Loading from '../../../shared/ui/Loading/Loading.jsx';
 
-import { useGetArticlesQuery } from '../../redux/apiSlice.js';
+import { useGetArticlesQuery } from '../../../redux/articlesApiSlice.js';
 
 const PostList = () => {
-  const [page, setPage] = useState(1);
+  const initialPage = parseInt(localStorage.getItem('currentPage')) || 1;
+  const [page, setPage] = useState(initialPage);
 
   const { data, error, isLoading } = useGetArticlesQuery({ page, limit: 5 });
+
+  useEffect(() => {
+    localStorage.setItem('currentPage', page);
+  }, [page]);
 
   const handlePageChange = (event, value) => {
     setPage(value);

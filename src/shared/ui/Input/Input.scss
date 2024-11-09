@@ -1,0 +1,40 @@
+@use '../../../styles/vars.scss' as vars;
+
+.form {
+  font-family: 'Roboto';
+  display: block;
+  &__title {
+    font-size: 14px;
+    line-height: 22px;
+    color: vars.$label-color;
+  }
+  &__input {
+    width: 97%;
+    padding: 8px 0 8px 10px;
+    font-size: 16px;
+    margin: 0;
+    background: transparent;
+    outline: none;
+    border: 0.5px solid vars.$border-color;
+    border-radius: 4px;
+
+    &::placeholder {
+      color: vars.$placeholder-color;
+      font-family: 'Roboto';
+      font-weight: 400;
+      font-size: 16px;
+      display: flex;
+      align-items: flex-start;
+    }
+  }
+  .error-border {
+    border: 0.5px solid vars.$error-color;
+  }
+
+  &__error {
+    font-size: 14px;
+    line-height: 22px;
+    color: vars.$error-color;
+    margin-bottom: 5px;
+  }
+}

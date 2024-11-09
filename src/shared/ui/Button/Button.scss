@@ -1,0 +1,17 @@
+@use '../../../styles/vars.scss' as vars;
+
+.button {
+  width: 92%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: vars.$info-color;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  color: vars.$base-color;
+  line-height: 150%;
+  padding: 8px 16px;
+  cursor: pointer;
+}
