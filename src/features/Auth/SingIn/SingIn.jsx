@@ -1,13 +1,15 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { useLoginUserMutation } from '../../redux/userApiSlice';
-import { login } from '../../redux/authSlice';
+import { toast } from 'react-toastify';
 
-import ErrorSnackbar from '../../shared/ui/ErrorSnackbar/ErrorSnackbar';
-import Button from '../../shared/ui/Button/Button';
-import Input from '../../shared/ui/Input/Input';
-import Loading from '../../shared/ui/Loading/Loading';
+import { useLoginUserMutation } from '../../../entities/User/userApiSlice';
+import { login } from '../authSlice';
+
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
+import Button from '../../../shared/ui/Button/Button';
+import Input from '../../../shared/ui/Input/Input';
+import Loading from '../../../shared/ui/Loading/Loading';
 import './SingIn.scss';
 
 const SingIn = () => {
@@ -17,8 +19,6 @@ const SingIn = () => {
     formState: { errors },
   } = useForm({ mode: 'onChange' });
 
-  // const isAuthenticated = useSelector((state) => state.auth.user.isAuthenticated);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loginUser, { isLoading, error }] = useLoginUserMutation();
@@ -26,10 +26,12 @@ const SingIn = () => {
   const onSubmit = async (data) => {
     try {
       const response = await loginUser({ user: data }).unwrap();
-      dispatch(login(response.user));
+      dispatch(login({ ...response.user, isAuthenticated: true }));
       navigate('/');
+      toast.success('Successfully logged in!');
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error(error?.data?.errors?.message || 'Login failed!');
     }
   };
 

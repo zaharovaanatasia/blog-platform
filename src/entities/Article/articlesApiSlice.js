@@ -41,6 +41,18 @@ export const articlesApiSlice = createApi({
         method: 'DELETE',
       }),
     }),
+    likeArticle: builder.mutation({
+      query: (slug) => ({
+        url: `/articles/${slug}/favorite`,
+        method: 'POST',
+      }),
+    }),
+    unlikeArticle: builder.mutation({
+      query: (slug) => ({
+        url: `/articles/${slug}/favorite`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
@@ -50,4 +62,6 @@ export const {
   useCreateArticleMutation,
   useUpdateArticleMutation,
   useDeleteArticleMutation,
+  useLikeArticleMutation,
+  useUnlikeArticleMutation,
 } = articlesApiSlice;

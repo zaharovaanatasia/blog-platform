@@ -1,13 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import Button from '../../shared/ui/Button/Button';
+import { toast } from 'react-toastify';
 
-import ErrorSnackbar from '../../shared/ui/ErrorSnackbar/ErrorSnackbar';
-import { login } from '../../redux/authSlice';
-import { useRegisterUserMutation } from '../../redux/userApiSlice';
-import Input from '../../shared/ui/Input/Input';
-import Loading from '../../shared/ui/Loading/Loading';
+import { login } from '../../Auth/authSlice.js';
+import { useRegisterUserMutation } from '../../../entities/User/userApiSlice.js';
+import Button from '../../../shared/ui/Button/Button';
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
+import Input from '../../../shared/ui/Input/Input';
+import Loading from '../../../shared/ui/Loading/Loading';
 import './SingUp.scss';
 
 const SingUp = () => {
@@ -33,8 +34,10 @@ const SingUp = () => {
       }).unwrap();
       dispatch(login(response.user));
       navigate('/');
+      toast.success('Registration successful!');
     } catch (error) {
       console.error('Registration failed:', error);
+      toast.error(error.message);
     }
   };
 

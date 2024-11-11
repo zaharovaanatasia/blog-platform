@@ -1,13 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import ErrorSnackbar from '../../shared/ui/ErrorSnackbar/ErrorSnackbar';
-import Loading from '../../shared/ui/Loading/Loading';
-import { useUpdateUserMutation } from '../../redux/userApiSlice';
-import Button from '../../shared/ui/Button/Button';
-import Input from '../../shared/ui/Input/Input';
+import { login } from '../../../features/Auth/authSlice';
+import { useUpdateUserMutation } from '../../User/userApiSlice';
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
+import Loading from '../../../shared/ui/Loading/Loading';
+import Button from '../../../shared/ui/Button/Button';
+import Input from '../../../shared/ui/Input/Input';
 
 import './Edit.scss';
 
@@ -45,13 +46,13 @@ const Edit = () => {
       const updatedUser = updatedUserResponse.user;
       updatedUser.token = user.token;
 
-      
       dispatch(login(updatedUser));
       localStorage.setItem('user', JSON.stringify(updatedUser));
-
+      toast.success('Profile updated successfully!');
       navigate('/profile');
     } catch (error) {
       console.error('Failed to update user:', error);
+      toast.error(error.error || 'An error occurred while updating the profile.');
     }
   };
 

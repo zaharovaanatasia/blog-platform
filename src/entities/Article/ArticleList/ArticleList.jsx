@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 
 import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar.jsx';
-import Post from '../Post/Post.jsx';
+import Article from '../Article/Article.jsx';
 import Loading from '../../../shared/ui/Loading/Loading.jsx';
 
-import { useGetArticlesQuery } from '../../../redux/articlesApiSlice.js';
+import { useGetArticlesQuery } from '../../../entities/Article/articlesApiSlice.js';
 
-const PostList = () => {
+import './ArticleList.scss';
+
+const ArticleList = () => {
   const initialPage = parseInt(localStorage.getItem('currentPage')) || 1;
   const [page, setPage] = useState(initialPage);
 
-  const { data, error, isLoading } = useGetArticlesQuery({ page, limit: 5 });
+  const { data, error, isLoading, refetch } = useGetArticlesQuery({ page, limit: 5 });
 
   useEffect(() => {
     localStorage.setItem('currentPage', page);
@@ -32,7 +34,7 @@ const PostList = () => {
   return (
     <div className="postlist">
       {data.articles.map((article) => (
-        <Post key={article.slug} article={article} />
+        <Article key={article.slug} article={article} refetch={refetch} />
       ))}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
         <Pagination
@@ -47,4 +49,4 @@ const PostList = () => {
   );
 };
 
-export default PostList;
+export default ArticleList;

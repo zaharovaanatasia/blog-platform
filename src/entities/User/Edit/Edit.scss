@@ -1,6 +1,6 @@
-@use '../../styles/vars.scss' as vars;
+@use '../../../styles/vars.scss' as vars;
 
-.signin {
+.edit {
   width: 380px;
   margin: 60px auto;
   background: vars.$base-color;
@@ -15,7 +15,6 @@
     0px 1.46302px 7.04911px rgba(0, 0, 0, 0.0282725),
     0px 0.608796px 2.93329px rgba(0, 0, 0, 0.0196802);
   border-radius: 6px;
-
   &__title {
     font-size: 20px;
     font-weight: 500;
@@ -26,15 +25,5 @@
     flex-direction: column;
     row-gap: 12px;
     margin: 21px 0;
-  }
-
-  &__quest {
-    font-size: 12px;
-    text-align: center;
-    margin-top: 8px;
-    color: vars.$footnote-color;
-    a {
-      color: vars.$info-color;
-    }
   }
 }

@@ -26,31 +26,9 @@
   display: flex;
   justify-content: end;
   margin-top: 20px;
-  .btn {
-    display: block;
-    background: transparent;
-    outline: none;
-    padding: 6px 17px;
-    border-radius: 5px;
-    cursor: pointer;
-    &__delete {
-      position: relative;
-      border: 1px solid vars.$error-color;
-      color: vars.$error-color;
-    }
-    &__edit {
-      margin-left: 12px;
-      border: 1px solid vars.$success-color;
-      color: vars.$success-color;
-    }
-  }
+  gap: 12px;
 }
 
-.modal {
-  position: relative;
-  top: 0;
-  right: 0;
-}
 
 .triangle {
   display: inline-block;

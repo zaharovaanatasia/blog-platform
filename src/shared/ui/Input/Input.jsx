@@ -1,6 +1,6 @@
 import './Input.scss';
 
-const Input = ({ title, type, register, errors, name, validation, height, value, onChange }) => {
+const Input = ({ title, type, register, errors, name, validation, height }) => {
   return (
     <div className="form">
       <label className="form__title" htmlFor={title}>
@@ -13,8 +13,6 @@ const Input = ({ title, type, register, errors, name, validation, height, value,
           placeholder={title}
           style={{ minHeight: height, resize: 'none', overflow: 'auto' }}
           {...register(name, validation)}
-          value={value}
-          onChange={onChange}
         ></textarea>
       ) : (
         <input
@@ -23,8 +21,6 @@ const Input = ({ title, type, register, errors, name, validation, height, value,
           type={type}
           placeholder={title}
           {...register(name, validation)}
-          value={value}
-          onChange={onChange}
         />
       )}
       {errors[name] && <p className="form__error">{errors[name].message}</p>}

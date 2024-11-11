@@ -1,8 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 
-import { logout } from '../../redux/authSlice';
+import { logout } from '../../features/Auth/authSlice';
 
 import './Header.scss';
 
@@ -33,10 +32,7 @@ const Header = () => {
             <NavLink to={'profile'} className="header__auth-user">
               <span>{user.username}</span>
               <div className="image">
-                <img
-                  src={user.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'}
-                  alt="User avatar"
-                />
+                <img src={user.image || '../../assets/img'} alt="User avatar" />
               </div>
             </NavLink>
 

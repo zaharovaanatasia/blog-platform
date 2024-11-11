@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useState } from 'react';
 import { Button } from '@mui/material';
 
@@ -7,21 +7,26 @@ import Input from '../Input/Input';
 import Tag from '../Tag/Tag';
 import './ArticleForm.scss';
 
-const ArticleForm = ({ text, onSubmit }) => {
+const ArticleForm = ({ text, onSubmit, initialValues = {} }) => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm({ mode: 'onChange' });
+  } = useForm({ mode: 'onChange', defaultValues: initialValues });
 
-  const [tags, setTags] = useState([{ id: 0, value: '' }]);
+  const [tags, setTags] = useState(initialValues.tags || [{ id: 0, value: '' }]);
 
   const addTag = () => {
     setTags([...tags, { id: tags.length, value: '' }]);
   };
 
   const removeTag = (id) => {
-    setTags(tags.filter((tag) => tag.id !== id));
+    if (tags.length > 1) {
+      setTags(tags.filter((tag) => tag.id !== id));
+    } else {
+      alert('You cannot delete the last tag.');
+    }
   };
 
   const handleTagChange = (id, value) => {
@@ -68,14 +73,25 @@ const ArticleForm = ({ text, onSubmit }) => {
         <div className="tags__content">
           <div className="tags__inputs">
             {tags.map((tag) => (
-              <Tag
+              <Controller
                 key={tag.id}
-                register={register}
-                id={tag.id}
-                errors={errors}
-                value={tag.value}
-                onChange={(value) => handleTagChange(tag.id, value)}
-                onDelete={() => removeTag(tag.id)}
+                name={`tag_${tag.id}`}
+                control={control}
+                defaultValue={tag.value}
+                render={({ field }) => (
+                  <Tag
+                    register={register}
+                    id={tag.id}
+                    errors={errors}
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      handleTagChange(tag.id, value);
+                    }}
+                    onDelete={() => removeTag(tag.id)}
+                    isLastTag={tags.length === 1}
+                  />
+                )}
               />
             ))}
           </div>

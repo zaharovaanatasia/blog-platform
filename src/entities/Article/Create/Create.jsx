@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { useCreateArticleMutation } from '../../redux/articlesApiSlice';
+import { toast } from 'react-toastify';
 
-import ArticleForm from '../../shared/ui/ArticleForm/ArticleForm';
+import { useCreateArticleMutation } from '../../../entities/Article/articlesApiSlice.js';
+import ArticleForm from '../../../shared/ui/ArticleForm/ArticleForm';
 import './Create.scss';
 
 const Create = () => {
@@ -9,7 +10,6 @@ const Create = () => {
   const [createArticle] = useCreateArticleMutation();
 
   const onSubmit = async (data) => {
-    console.log('Data before sending:', data);
     const articleData = {
       article: {
         title: data.Title,
@@ -19,13 +19,13 @@ const Create = () => {
       },
     };
 
-    console.log('Article data:', articleData);
-
     try {
       await createArticle(articleData).unwrap();
       navigate('/');
+      toast.success('Article created successfully!');
     } catch (error) {
       console.error('Failed to create article:', error);
+      toast.error('Failed to create article!');
     }
   };
 
