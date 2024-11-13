@@ -90,8 +90,6 @@ const ArticleDetail = () => {
     }
   };
 
-
-
   return (
     <div className="postdetail">
       <div className="post">

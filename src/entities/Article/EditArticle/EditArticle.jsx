@@ -24,7 +24,6 @@ const EditArticle = () => {
       },
     };
 
-
     try {
       await updateArticle({ slug, ...articleData }).unwrap();
       toast.success('Article updated successfully!');
@@ -49,7 +48,6 @@ const EditArticle = () => {
     Text: article.article.body,
     tags: article.article.tagList.map((tag) => ({ id: nanoid(), value: tag })),
   };
-
 
   return (
     <>
