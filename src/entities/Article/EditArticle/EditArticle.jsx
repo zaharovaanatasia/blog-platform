@@ -6,6 +6,7 @@ import ArticleForm from '../../../shared/ui/ArticleForm/ArticleForm';
 import Loading from '../../../shared/ui/Loading/Loading';
 import './EditArticle.scss';
 import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
+import { nanoid } from 'nanoid';
 
 const EditArticle = () => {
   const { slug } = useParams();
@@ -22,6 +23,7 @@ const EditArticle = () => {
         tagList: data.tags.map((tag) => tag.value).filter(Boolean),
       },
     };
+
 
     try {
       await updateArticle({ slug, ...articleData }).unwrap();
@@ -45,8 +47,9 @@ const EditArticle = () => {
     Title: article.article.title,
     'Short description': article.article.description,
     Text: article.article.body,
-    tags: article.article.tagList.map((tag, index) => ({ id: index, value: tag })),
+    tags: article.article.tagList.map((tag) => ({ id: nanoid(), value: tag })),
   };
+
 
   return (
     <>

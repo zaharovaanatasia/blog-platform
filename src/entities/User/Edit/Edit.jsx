@@ -1,7 +1,8 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 import { login } from '../../../features/Auth/authSlice';
 import { useUpdateUserMutation } from '../../User/userApiSlice';
@@ -19,8 +20,14 @@ const Edit = () => {
 
   const [updateUser, { isLoading, error }] = useUpdateUserMutation();
 
+  useEffect(() => {
+    if (!user?.isAuthenticated) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -28,7 +35,7 @@ const Edit = () => {
     defaultValues: {
       username: user.username,
       email: user.email,
-      avatar: user.image,
+      image: user.image,
     },
   });
 
@@ -37,17 +44,25 @@ const Edit = () => {
       if (!data.password) {
         data.password = user.password;
       }
-
-      if (!data.avatar) {
-        data.avatar = user.image;
+      if (!data.image) {
+        data.image = user.image || '';
       }
 
       const updatedUserResponse = await updateUser(data).unwrap();
-      const updatedUser = updatedUserResponse.user;
-      updatedUser.token = user.token;
+
+      if (!updatedUserResponse || !updatedUserResponse.user) {
+        throw new Error('Failed to receive updated user data');
+      }
+
+      const updatedUser = {
+        ...updatedUserResponse.user,
+        token: user.token,
+        isAuthenticated: true,
+      };
 
       dispatch(login(updatedUser));
       localStorage.setItem('user', JSON.stringify(updatedUser));
+
       toast.success('Profile updated successfully!');
       navigate('/profile');
     } catch (error) {
@@ -65,40 +80,38 @@ const Edit = () => {
     <form className="edit" onSubmit={handleSubmit(onSubmit)}>
       <div className="edit__title">Edit Profile</div>
       <div className="edit__inputs">
-        <Input
-          title="Username"
+        <Controller
+          control={control}
           name="username"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Username is required',
             minLength: {
               value: 1,
               message: 'Username cannot be empty',
             },
           }}
+          render={({ field }) => (
+            <Input title="Username" name="username" errors={errors} field={field} />
+          )}
         />
-        <Input
-          title="Email address"
+        <Controller
+          control={control}
           name="email"
-          type="email"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Email is required',
             pattern: {
               value: /^\S+@\S+\.\S+$/,
               message: 'Invalid email address',
             },
           }}
+          render={({ field }) => (
+            <Input title="Email address" name="email" type="email" errors={errors} field={field} />
+          )}
         />
-        <Input
-          title="New password"
+        <Controller
+          control={control}
           name="password"
-          type="password"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             minLength: {
               value: 6,
               message: 'Password must be at least 6 characters',
@@ -108,22 +121,32 @@ const Edit = () => {
               message: 'Password cannot exceed 40 characters',
             },
           }}
+          render={({ field }) => (
+            <Input
+              title="New password"
+              name="password"
+              type="password"
+              errors={errors}
+              field={field}
+            />
+          )}
         />
-        <Input
-          title="Avatar img (url)"
-          name="avatar"
-          register={register}
-          errors={errors}
-          validation={{
+        <Controller
+          control={control}
+          name="image"
+          rules={{
             pattern: {
               value: /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|webp))$/,
               message: 'Invalid URL for avatar image',
             },
           }}
+          render={({ field }) => (
+            <Input title="Avatar img (url)" name="image" errors={errors} field={field} />
+          )}
         />
       </div>
 
-      <Button text="Save"></Button>
+      <Button text="Save" />
     </form>
   );
 };

@@ -1,39 +1,33 @@
-import { useForm, Controller } from 'react-hook-form';
-import { useState } from 'react';
+import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { Button } from '@mui/material';
+import PropTypes from 'prop-types';
 
 import { articleValidation } from '../../utils/articleValidation';
 import Input from '../Input/Input';
-import Tag from '../Tag/Tag';
 import './ArticleForm.scss';
 
 const ArticleForm = ({ text, onSubmit, initialValues = {} }) => {
   const {
-    register,
-    handleSubmit,
     control,
+    handleSubmit,
     formState: { errors },
-  } = useForm({ mode: 'onChange', defaultValues: initialValues });
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      ...initialValues,
+      tags: initialValues.tags?.length
+        ? initialValues.tags.map((tag) => ({ value: tag.value })) // Используем только value
+        : [{ value: '' }],
+    },
+  });
 
-  const [tags, setTags] = useState(initialValues.tags || [{ id: 0, value: '' }]);
-
-  const addTag = () => {
-    setTags([...tags, { id: tags.length, value: '' }]);
-  };
-
-  const removeTag = (id) => {
-    if (tags.length > 1) {
-      setTags(tags.filter((tag) => tag.id !== id));
-    } else {
-      alert('You cannot delete the last tag.');
-    }
-  };
-
-  const handleTagChange = (id, value) => {
-    setTags(tags.map((tag) => (tag.id === id ? { ...tag, value } : tag)));
-  };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'tags',
+  });
 
   const handleFormSubmit = (data) => {
+    const tags = data.tags.filter((tag) => tag.value.trim() !== '');
     onSubmit({ ...data, tags });
   };
 
@@ -41,30 +35,44 @@ const ArticleForm = ({ text, onSubmit, initialValues = {} }) => {
     <form className="create" onSubmit={handleSubmit(handleFormSubmit)}>
       <h3 className="create__title">{text}</h3>
       <div className="create__inputs">
-        <Input
-          title="Title"
+        <Controller
+          control={control}
           name="Title"
-          type="text"
-          register={register}
-          errors={errors}
-          validation={articleValidation.Title}
+          rules={articleValidation.Title}
+          render={({ field }) => (
+            <Input title="Title" name="Title" type="text" field={field} errors={errors} />
+          )}
         />
-        <Input
-          title="Short description"
+
+        <Controller
+          control={control}
           name="Short description"
-          type="text"
-          register={register}
-          errors={errors}
-          validation={articleValidation['Short description']}
+          rules={articleValidation['Short description']}
+          render={({ field }) => (
+            <Input
+              title="Short description"
+              name="Short description"
+              type="text"
+              field={field}
+              errors={errors}
+            />
+          )}
         />
-        <Input
-          title="Text"
+
+        <Controller
+          control={control}
           name="Text"
-          type="textarea"
-          height="170px"
-          register={register}
-          errors={errors}
-          validation={articleValidation.Text}
+          rules={articleValidation.Text}
+          render={({ field }) => (
+            <Input
+              title="Text"
+              name="Text"
+              type="textarea"
+              height="170px"
+              field={field}
+              errors={errors}
+            />
+          )}
         />
       </div>
 
@@ -72,33 +80,41 @@ const ArticleForm = ({ text, onSubmit, initialValues = {} }) => {
         <div className="form__title tags__title">Tags</div>
         <div className="tags__content">
           <div className="tags__inputs">
-            {tags.map((tag) => (
+            {fields.map((field, index) => (
               <Controller
-                key={tag.id}
-                name={`tag_${tag.id}`}
+                key={field.id}
                 control={control}
-                defaultValue={tag.value}
-                render={({ field }) => (
-                  <Tag
-                    register={register}
-                    id={tag.id}
-                    errors={errors}
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      handleTagChange(tag.id, value);
-                    }}
-                    onDelete={() => removeTag(tag.id)}
-                    isLastTag={tags.length === 1}
-                  />
-                )}
+                name={`tags[${index}].value`}
+                defaultValue={field.value}
+                render={({ field }) => {
+                  return (
+                    <div className="tags__item">
+                      <Input
+                        title=""
+                        name={`tags[${index}].value`}
+                        type="text"
+                        field={field}
+                        errors={errors}
+                      />
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => remove(index)}
+                        sx={{ width: 120, height: 42 }}
+                        disabled={fields.length === 1}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  );
+                }}
               />
             ))}
           </div>
           <Button
             variant="outlined"
             color="primary"
-            onClick={addTag}
+            onClick={() => append({ value: '' })}
             sx={{ width: 120, height: 42 }}
           >
             Add tag
@@ -111,6 +127,12 @@ const ArticleForm = ({ text, onSubmit, initialValues = {} }) => {
       </Button>
     </form>
   );
+};
+
+ArticleForm.propTypes = {
+  text: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  initialValues: PropTypes.object,
 };
 
 export default ArticleForm;

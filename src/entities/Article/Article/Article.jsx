@@ -2,6 +2,8 @@ import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { nanoid } from 'nanoid';
 
 import { truncateText } from '../../../shared/utils/truncateText.js';
 import { cleanText } from '../../../shared/utils/cleanText.js';
@@ -19,10 +21,10 @@ const Article = ({ article: initialArticle }) => {
   const [unlikeArticle] = useUnlikeArticleMutation();
   const token = useSelector((state) => state.auth.user.token);
   const [article, setArticle] = useState(initialArticle);
-
   const formatDate = (dateString) => {
     return format(new Date(dateString), 'MMMM d, yyyy');
   };
+
   const maxTagsDisplayed = 2;
   const maxTagLength = 10;
 
@@ -30,14 +32,13 @@ const Article = ({ article: initialArticle }) => {
   const title = article?.title || 'No Title';
   const description = article?.description || 'No Description';
   const authorUsername = article?.author?.username || 'Unknown Author';
-  const authorImage = article?.author?.image || <img src="../../../assets/img" />;
+  const authorImage = article?.author?.image;
   const createdAt = article?.createdAt || new Date().toISOString();
   const favoritesCount = article?.favoritesCount || 0;
   const slug = article?.slug || 'default-slug';
 
   const handleLikeClick = async () => {
     if (!token) {
-      console.log('Token:', token);
       navigate('/sign-in');
       return;
     }
@@ -77,10 +78,10 @@ const Article = ({ article: initialArticle }) => {
             </div>
           </div>
           <div className="post__tags">
-            {tagList.slice(0, maxTagsDisplayed).map((tag, id) => {
+            {tagList.slice(0, maxTagsDisplayed).map((tag) => {
               const cleanTag = tag ? cleanText(truncateText(tag, maxTagLength)) : 'No Tag';
               return (
-                <span key={id} className="post__tags-tag">
+                <span key={nanoid()} className="post__tags-tag">
                   {cleanTag}
                 </span>
               );
@@ -106,5 +107,7 @@ const Article = ({ article: initialArticle }) => {
     </div>
   );
 };
+
+Article.propTypes = { article: PropTypes.object.isRequired };
 
 export default Article;

@@ -18,7 +18,6 @@ const Create = () => {
         tagList: data.tags.map((tag) => tag.value).filter(Boolean),
       },
     };
-
     try {
       await createArticle(articleData).unwrap();
       navigate('/');
@@ -31,7 +30,16 @@ const Create = () => {
 
   return (
     <>
-      <ArticleForm text="Create New Article" onSubmit={onSubmit}></ArticleForm>
+      <ArticleForm
+        text="Create New Article"
+        onSubmit={onSubmit}
+        initialValues={{
+          Title: '',
+          'Short description': '',
+          Text: '',
+          tags: [{ value: '' }],
+        }}
+      />
     </>
   );
 };

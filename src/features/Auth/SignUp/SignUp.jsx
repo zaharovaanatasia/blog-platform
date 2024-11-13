@@ -1,38 +1,54 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { login } from '../../Auth/authSlice.js';
+import { login } from '../authSlice.js';
 import { useRegisterUserMutation } from '../../../entities/User/userApiSlice.js';
-import Button from '../../../shared/ui/Button/Button';
-import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
-import Input from '../../../shared/ui/Input/Input';
-import Loading from '../../../shared/ui/Loading/Loading';
-import './SingUp.scss';
+import Button from '../../../shared/ui/Button/Button.jsx';
+import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar.jsx';
+import Input from '../../../shared/ui/Input/Input.jsx';
+import Loading from '../../../shared/ui/Loading/Loading.jsx';
 
-const SingUp = () => {
+import './SignUp.scss';
+
+const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [registerUser, { isLoading, error }] = useRegisterUserMutation();
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
     watch,
-  } = useForm({ mode: 'onChange' });
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      repeatPassword: '',
+      agree: false,
+    },
+  });
 
   const onSubmit = async (data) => {
     try {
       const { username, email, password } = data;
-      const normalizedEmail = email.toLowerCase();
+      const normalizedEmail = email ? email.toLowerCase() : '';
+
+      const defaultImage = 'https://static.productionready.io/images/smiley-cyrus.jpg';
 
       const response = await registerUser({
-        user: { username, email: normalizedEmail, password },
+        user: { username, email: normalizedEmail, password, image: defaultImage },
       }).unwrap();
-      dispatch(login(response.user));
+
+      const responseData = { ...response.user, image: response.user.image || defaultImage };
+
+      dispatch(login(responseData));
       navigate('/');
       toast.success('Registration successful!');
     } catch (error) {
@@ -54,50 +70,81 @@ const SingUp = () => {
     <form className="signup" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="signup__title"> Create a new account</h3>
       <div className="signup__inputs">
-        <Input
-          title="Username"
+        <Controller
+          control={control}
           name="username"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Username is required',
             minLength: { value: 3, message: 'Username must be at least 3 characters' },
             maxLength: { value: 20, message: 'Username must be at most 20 characters' },
           }}
+          render={({ field }) => (
+            <Input
+              title="Username"
+              name="username"
+              errors={errors}
+              field={field}
+              autocomplete="username"
+            />
+          )}
         />
-        <Input
-          title="Email address"
+
+        <Controller
+          control={control}
           name="email"
-          type="email"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Email is required',
             pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email address' },
           }}
+          render={({ field }) => (
+            <Input
+              title="Email address"
+              name="email"
+              type="email"
+              errors={errors}
+              field={field}
+              autocomplete="email"
+            />
+          )}
         />
-        <Input
-          title="Password"
+
+        <Controller
+          control={control}
           name="password"
-          type="password"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Password is required',
             minLength: { value: 6, message: 'Password must be at least 6 characters' },
             maxLength: { value: 40, message: 'Password must be at most 40 characters' },
           }}
+          render={({ field }) => (
+            <Input
+              title="Password"
+              name="password"
+              type="password"
+              errors={errors}
+              field={field}
+              autocomplete="new-password"
+            />
+          )}
         />
-        <Input
-          title="Repeat Password"
+
+        <Controller
+          control={control}
           name="repeatPassword"
-          type="password"
-          register={register}
-          errors={errors}
-          validation={{
+          rules={{
             required: 'Repeat Password is required',
             validate: (value) => value === password || 'Passwords do not match',
           }}
+          render={({ field }) => (
+            <Input
+              title="Repeat Password"
+              name="repeatPassword"
+              type="password"
+              errors={errors}
+              field={field}
+              autocomplete="new-password"
+            />
+          )}
         />
       </div>
 
@@ -121,4 +168,4 @@ const SingUp = () => {
   );
 };
 
-export default SingUp;
+export default SignUp;

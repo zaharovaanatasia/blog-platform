@@ -50,3 +50,19 @@
     row-gap: 5px;
   }
 }
+
+.tags {
+  &__item {
+    display: flex;
+    column-gap: 17px;
+    align-items: flex-start;
+
+    input {
+      width: 290px;
+      padding: 8px 12px;
+      outline: none;
+      border: 1px solid vars.$placeholder-color;
+      border-radius: 5px;
+    }
+  }
+}

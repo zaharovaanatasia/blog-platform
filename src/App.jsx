@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import SingIn from './features/Auth/SingIn/SingIn';
-import SingUp from './features/Auth/SingUp/SingUp';
+import SignIn from './features/Auth/SignIn/SignIn';
+import SignUp from './features/Auth/SignUp/SignUp';
 
 import Header from './widgets/Header/Header';
 import PrivateRoute from './widgets/PrivateRoute';
@@ -26,8 +26,8 @@ const App = () => {
         <Route path="/" element={<ArticleList />}></Route>
         <Route path="/articles" element={<ArticleList />}></Route>
         <Route path="/articles/:slug" element={<ArticleDetail />} />
-        <Route path="/sign-in" element={<SingIn />} />
-        <Route path="/sign-un" element={<SingUp />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="/profile" element={<Edit />} />
         <Route path="/new-article" element={<PrivateRoute />}>
           <Route path="" element={<Create />} />

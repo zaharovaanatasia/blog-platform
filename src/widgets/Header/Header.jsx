@@ -12,7 +12,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
     navigate('/');
   };
 
@@ -32,7 +32,10 @@ const Header = () => {
             <NavLink to={'profile'} className="header__auth-user">
               <span>{user.username}</span>
               <div className="image">
-                <img src={user.image || '../../assets/img'} alt="User avatar" />
+                <img
+                  src={user.image || 'https://static.productionready.io/images/smiley-cyrus.jpg'}
+                  alt="User avatar"
+                />
               </div>
             </NavLink>
 
@@ -51,7 +54,7 @@ const Header = () => {
               Sign In
             </NavLink>
             <NavLink
-              to="/sign-un"
+              to="/sign-up"
               className={({ isActive }) =>
                 isActive ? 'header__sign-up active' : 'header__sign-up'
               }

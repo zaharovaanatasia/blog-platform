@@ -1,9 +1,10 @@
+import PropTypes from 'prop-types';
 import './Input.scss';
 
-const Input = ({ title, type, register, errors, name, validation, height }) => {
+const Input = ({ title, type, field, errors, name, height, autocomplete }) => {
   return (
     <div className="form">
-      <label className="form__title" htmlFor={title}>
+      <label className="form__title" htmlFor={name}>
         {title}
       </label>
       {type === 'textarea' ? (
@@ -12,7 +13,7 @@ const Input = ({ title, type, register, errors, name, validation, height }) => {
           id={name}
           placeholder={title}
           style={{ minHeight: height, resize: 'none', overflow: 'auto' }}
-          {...register(name, validation)}
+          {...field}
         ></textarea>
       ) : (
         <input
@@ -20,12 +21,23 @@ const Input = ({ title, type, register, errors, name, validation, height }) => {
           id={name}
           type={type}
           placeholder={title}
-          {...register(name, validation)}
+          {...field}
+          autoComplete={autocomplete}
         />
       )}
       {errors[name] && <p className="form__error">{errors[name].message}</p>}
     </div>
   );
+};
+
+Input.propTypes = {
+  title: PropTypes.string.isRequired,
+  type: PropTypes.string,
+  errors: PropTypes.object,
+  name: PropTypes.string.isRequired,
+  field: PropTypes.object,
+  height: PropTypes.string,
+  autocomplete: PropTypes.string,
 };
 
 export default Input;

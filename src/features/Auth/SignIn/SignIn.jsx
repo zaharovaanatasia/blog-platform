@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -10,14 +10,20 @@ import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
 import Button from '../../../shared/ui/Button/Button';
 import Input from '../../../shared/ui/Input/Input';
 import Loading from '../../../shared/ui/Loading/Loading';
-import './SingIn.scss';
+import './SignIn.scss';
 
-const SingIn = () => {
+const SignIn = () => {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
-  } = useForm({ mode: 'onChange' });
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,34 +52,50 @@ const SingIn = () => {
     <form className="signin" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="signin__title">Sign In</h3>
       <div className="signin__inputs">
-        <Input
-          type="email"
+        <Controller
+          control={control}
           name="email"
-          register={register}
-          errors={errors}
-          title="Email address"
-          validation={{
+          rules={{
             required: 'Email is required',
             pattern: { value: /^\S+@\S+$/, message: 'Invalid email address' },
           }}
-        ></Input>
-        <Input
-          register={register}
+          render={({ field }) => (
+            <Input
+              type="email"
+              name="email"
+              errors={errors}
+              field={field}
+              title="Email address"
+              autocomplete="email"
+            />
+          )}
+        />
+
+        <Controller
+          control={control}
           name="password"
-          errors={errors}
-          type="password"
-          title="Password"
-          validation={{
+          rules={{
             required: 'Password is required',
           }}
-        ></Input>
+          render={({ field }) => (
+            <Input
+              type="password"
+              name="password"
+              errors={errors}
+              field={field}
+              title="Password"
+              autocomplete="current-password"
+            />
+          )}
+        />
       </div>
-      <Button text="Login"></Button>
+
+      <Button text="Login" />
       <p className="signin__quest">
-        Don’t have an account? <NavLink to={'/sign-un'}>Sign Up</NavLink>
+        Don’t have an account? <NavLink to={'/sign-up'}>Sign Up</NavLink>
       </p>
     </form>
   );
 };
 
-export default SingIn;
+export default SignIn;

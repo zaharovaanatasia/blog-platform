@@ -16,13 +16,17 @@ export const userApiSlice = createApi({
   }),
   endpoints: (builder) => ({
     registerUser: builder.mutation({
-      query: (userData) => ({
-        url: '/users',
-        method: 'POST',
-        body: userData,
-      }),
+      query: (userData) => {
+        return {
+          url: '/users',
+          method: 'POST',
+          body: userData,
+        };
+      },
     }),
+
     loginUser: builder.mutation({
+      
       query: (userData) => ({
         url: '/users/login',
         method: 'POST',
@@ -33,7 +37,13 @@ export const userApiSlice = createApi({
       query: (userData) => ({
         url: '/user',
         method: 'PUT',
-        body: { user: userData },
+        body: {
+          user: {
+            username: userData.username,
+            email: userData.email,
+            image: userData.image,
+          },
+        },
       }),
     }),
   }),
