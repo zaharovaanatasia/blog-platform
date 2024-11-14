@@ -1,5 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { login } from './features/Auth/authSlice';
 
 import SignIn from './features/Auth/SignIn/SignIn';
 import SignUp from './features/Auth/SignUp/SignUp';
@@ -9,7 +12,7 @@ import PrivateRoute from './widgets/PrivateRoute';
 
 import ArticleList from './entities/Article/ArticleList/ArticleList';
 import ArticleDetail from './entities/Article/ArticleDetail/ArticleDetail';
-import EditArticle from './entities/Article/EditArticle/EditArticle';
+import EditArticle from './features/EditArticle/EditArticle';
 import Create from './entities/Article/Create/Create';
 
 import Edit from './entities/User/Edit/Edit';
@@ -19,6 +22,16 @@ import './styles/normalize.css';
 import './App.scss';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
+    if (storedUser?.token) {
+      dispatch(login(storedUser));
+    }
+  }, [dispatch]);
+
   return (
     <>
       <Header></Header>

@@ -1,11 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { useGetArticleBySlugQuery, useUpdateArticleMutation } from '../../Article/articlesApiSlice';
-import ArticleForm from '../../../shared/ui/ArticleForm/ArticleForm';
-import Loading from '../../../shared/ui/Loading/Loading';
+import {
+  useGetArticleBySlugQuery,
+  useUpdateArticleMutation,
+} from '../../entities/Article/articlesApiSlice';
+import ArticleForm from '../../shared/ui/ArticleForm/ArticleForm';
+import Loading from '../../shared/ui/Loading/Loading';
 import './EditArticle.scss';
-import ErrorSnackbar from '../../../shared/ui/ErrorSnackbar/ErrorSnackbar';
+import ErrorSnackbar from '../../shared/ui/ErrorSnackbar/ErrorSnackbar';
 import { nanoid } from 'nanoid';
 
 const EditArticle = () => {
