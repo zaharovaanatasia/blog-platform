@@ -3,6 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import { signInValidation } from '../../../shared/utils/userValidation';
 import { useLoginUserMutation } from '../../../entities/User/userApiSlice';
 import { login } from '../authSlice';
 
@@ -55,10 +56,7 @@ const SignIn = () => {
         <Controller
           control={control}
           name="email"
-          rules={{
-            required: 'Email is required',
-            pattern: { value: /^\S+@\S+$/, message: 'Invalid email address' },
-          }}
+          rules={signInValidation.email}
           render={({ field }) => (
             <Input
               type="email"
@@ -74,9 +72,7 @@ const SignIn = () => {
         <Controller
           control={control}
           name="password"
-          rules={{
-            required: 'Password is required',
-          }}
+          rules={signInValidation.password}
           render={({ field }) => (
             <Input
               type="password"

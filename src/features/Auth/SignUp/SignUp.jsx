@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
+import { signUpValidation } from '../../../shared/utils/userValidation.js';
 import { login } from '../authSlice.js';
 import { useRegisterUserMutation } from '../../../entities/User/userApiSlice.js';
 import Button from '../../../shared/ui/Button/Button.jsx';
@@ -23,7 +24,6 @@ const SignUp = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -57,8 +57,6 @@ const SignUp = () => {
     }
   };
 
-  const password = watch('password');
-
   if (isLoading) return <Loading />;
 
   if (error) {
@@ -73,11 +71,7 @@ const SignUp = () => {
         <Controller
           control={control}
           name="username"
-          rules={{
-            required: 'Username is required',
-            minLength: { value: 3, message: 'Username must be at least 3 characters' },
-            maxLength: { value: 20, message: 'Username must be at most 20 characters' },
-          }}
+          rules={signUpValidation.username}
           render={({ field }) => (
             <Input
               title="Username"
@@ -92,10 +86,7 @@ const SignUp = () => {
         <Controller
           control={control}
           name="email"
-          rules={{
-            required: 'Email is required',
-            pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email address' },
-          }}
+          rules={signUpValidation.email}
           render={({ field }) => (
             <Input
               title="Email address"
@@ -111,11 +102,7 @@ const SignUp = () => {
         <Controller
           control={control}
           name="password"
-          rules={{
-            required: 'Password is required',
-            minLength: { value: 6, message: 'Password must be at least 6 characters' },
-            maxLength: { value: 40, message: 'Password must be at most 40 characters' },
-          }}
+          rules={signUpValidation.password}
           render={({ field }) => (
             <Input
               title="Password"
@@ -131,10 +118,7 @@ const SignUp = () => {
         <Controller
           control={control}
           name="repeatPassword"
-          rules={{
-            required: 'Repeat Password is required',
-            validate: (value) => value === password || 'Passwords do not match',
-          }}
+          rules={signUpValidation.repeatPassword}
           render={({ field }) => (
             <Input
               title="Repeat Password"
@@ -153,7 +137,7 @@ const SignUp = () => {
         <input
           type="checkbox"
           {...register('agree', {
-            required: 'You must agree to the processing of personal information',
+            required: signUpValidation.agree.required,
           })}
         />
         <p>I agree to the processing of my personal information</p>

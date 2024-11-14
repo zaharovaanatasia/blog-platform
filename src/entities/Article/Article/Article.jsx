@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
 
+import { formatDate } from '../../../shared/utils/formatDate.js';
 import { truncateText } from '../../../shared/utils/truncateText.js';
 import { cleanText } from '../../../shared/utils/cleanText.js';
 
@@ -21,9 +21,6 @@ const Article = ({ article: initialArticle }) => {
   const [unlikeArticle] = useUnlikeArticleMutation();
   const token = useSelector((state) => state.auth.user.token);
   const [article, setArticle] = useState(initialArticle);
-  const formatDate = (dateString) => {
-    return format(new Date(dateString), 'MMMM d, yyyy');
-  };
 
   const maxTagsDisplayed = 2;
   const maxTagLength = 10;
